@@ -1,21 +1,101 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import * as Facebook from 'expo-facebook';
+import aaa from "./aaa.js"
+
+console.disableYellowBox = true;
 
 export default function App() {
+
+  const [isLoggedin, setLoggedinStatus] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [isImageLoading, setImageLoadStatus] = useState(false);
+
+  facebookLogIn = async () => {
+    try {
+      await Facebook.initializeAsync('2673125552909503');
+      const {
+        type,
+        token,
+        expires,
+        permissions,
+        declinedPermissions,
+      } = await Facebook.logInWithReadPermissionsAsync({
+        permissions: ['public_profile'],
+      });
+      if (type === 'success') {
+        // Get the user's name using Facebook's Graph API
+        fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,picture.height(500)`)
+          .then(response => response.json())
+          .then(data => {
+            setLoggedinStatus(true);
+            setUserData(data);
+          })
+          .catch(e => console.log(e))
+      } else {
+        // type === 'cancel'
+      }
+    } catch ({ message }) {
+      alert(`Facebook Login Error: ${message}`);
+    }
+  }
+
+  logout = () => {
+    setLoggedinStatus(false);
+    setUserData(null);
+    setImageLoadStatus(false);
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    isLoggedin ?
+      userData ?
+        <View style={styles.container}>
+          <Image
+            style={{ width: 200, height: 200, borderRadius: 50 }}
+            source={{ uri: userData.picture.data.url }}
+            onLoadEnd={() => setImageLoadStatus(true)} />
+          <ActivityIndicator size="large" color="#0000ff" animating={!isImageLoading} style={{ position: "absolute" }} />
+          <Text style={{ fontSize: 22, marginVertical: 10 }}>Hi {userData.name}!</Text>
+          <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
+            <Text style={{ color: "#fff" }}>Logout</Text>
+          </TouchableOpacity>
+        </View> :
+        null
+      :
+      <View style={styles.container}>
+        <Image
+          style={{ width: 200, height: 200, borderRadius: 50, marginVertical: 20 }}
+          source={require("./assets/splash.png")} />
+        <TouchableOpacity style={styles.loginBtn} onPress={facebookLogIn}>
+          <Text style={{ color: "#fff" }}>Login with Facebook</Text>
+        </TouchableOpacity>
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#e9ebee',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  loginBtn: {
+    backgroundColor: '#4267b2',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20
+  },
+  logoutBtn: {
+    backgroundColor: 'grey',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    position: "absolute",
+    bottom: 0
+  },
 });
+
+// https://yuddomack.tistory.com/entry/React-Navigation%EC%9C%BC%EB%A1%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%ED%83%AD-%EB%84%A4%EB%B9%84%EA%B2%8C%EC%9D%B4%ED%84%B0-%ED%99%94%EB%A9%B4-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0
+// 네비게이션 통해서 화면 전환하기.
+
