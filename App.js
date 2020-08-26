@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, KeyboardAwareScrollView, StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator, Button ,TextInput} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator, Button ,TextInput} from 'react-native';
 import * as Facebook from 'expo-facebook';
 
 
@@ -56,7 +56,7 @@ export default function App() {
 
   return (
     isLoggedin ?
-      userData ? // true시 로그인완료화면 띄우는것
+      userData ? // true시 로그인완료화면 띄우는것 --> 이걸 navigation 연결해서 Profile.js로 바뀌게끔.
         <View style={styles.container}>
           <Image
             style={{ width: 200, height: 200, borderRadius: 50 }}
@@ -77,8 +77,8 @@ export default function App() {
           <View style = {styles.LogoContainer}>
               <Image
                 style={styles.loginLogo}
-                source={require("./assets/login_maker-remove.png")} />
-          </View>
+                source={require("./assets/login_maker-remove.png")} /> 
+          </View> 
         <View style = {styles.inputBox}>
           <Text style = {styles.inputText}>아이디</Text>
 
@@ -201,5 +201,3 @@ const styles = StyleSheet.create({
 
 // https://yuddomack.tistory.com/entry/React-Navigation%EC%9C%BC%EB%A1%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%ED%83%AD-%EB%84%A4%EB%B9%84%EA%B2%8C%EC%9D%B4%ED%84%B0-%ED%99%94%EB%A9%B4-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0
 // 네비게이션 통해서 화면 전환하기.
-//https://yuddomack.tistory.com/entry/5React-Native-%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83-%EB%94%94%EC%9E%90%EC%9D%B8-2%EB%B6%80-%EB%B0%B0%EC%B9%98Flex-Direction%EC%99%80-%EC%A0%95%EB%A0%ACjustify-content-align-items?category=754156
-//레이아웃 flexDirection ->내일 레이아웃마무리하기. + 구글로그인
