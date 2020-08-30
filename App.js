@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator, Button ,TextInput} from 'react-native';
 import * as Facebook from 'expo-facebook';
-
+// 제가 리액트네이티브를 처음에 expo로 배워서 당연히 expo로 하실줄 알고 expo로 개발을 했습니다..
+// react native cli에서 실행될까 걱정이.. + 일단 결과물을 만들어야해서 컴포넌트 나누고 그러진 못했습니다..
 
 console.disableYellowBox = true;
 
@@ -9,17 +10,21 @@ export default function App() {
 
   login = (email, pass) => {
     alert("email : " + email + "   password : " + pass);
-  };
- // state 관리 : 변수와 set함수 = 초기값 포멧
+  }; // 일단 변수에 입력값이 저장되는지 확인하기 위해 로그인 함수를 만들었습니다.
+
+
+ // state 관리 : [변수, set함수] = useState(초기값);
   const [isLoggedin, setLoggedinStatus] = useState(false);
   const [userData, setUserData] = useState(null);
   const [isImageLoading, setImageLoadStatus] = useState(false);
+  // facebook Login variable
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // sign in variable
 
-  facebookLogIn = async () => {
+  facebookLogIn = async () => { // 이건 페이스북 sns 로그인에서 따왔습니다(https://docs.expo.io/versions/latest/sdk/facebook/)
     try {
-      await Facebook.initializeAsync('2673125552909503');
+      await Facebook.initializeAsync('2673125552909503'); // appId(facebook developer에서 앱 등록한 ID입니다.)
       const {
         type,
         token,
@@ -50,13 +55,13 @@ export default function App() {
     setLoggedinStatus(false);
     setUserData(null);
     setImageLoadStatus(false);
-  }
-
+  } // logout 함수 (지금 페이스북로그인이 완료되면 다음화면에서 name과 picture에 접근 txt & 로그아웃버튼이 있습니다.)
+    // 그 로그아웃버튼을 누를때 호출되는 함수입니다.
 
 
   return (
     isLoggedin ?
-      userData ? // true시 로그인완료화면 띄우는것 --> 이걸 navigation 연결해서 Profile.js로 바뀌게끔.
+      userData ? // true시 로그인완료화면 띄우는것
         <View style={styles.container}>
           <Image
             style={{ width: 200, height: 200, borderRadius: 50 }}
@@ -69,7 +74,11 @@ export default function App() {
           </TouchableOpacity>
         </View> :
         null
-      : // 로그인성공전(로그인 대기화면)
+      : 
+      // 로그인성공전(로그인 대기화면) 로고와 id, pw 입력창 등등 ui 구성요소들 / 
+      // % 이용해서 height을 조절하려고했는데 로그인시 키패드가 올라오면서 높이가 줄어들면서 위치가 변해서 일단 절대값들을 넣어놨습니다.
+      // + 로고 png는 은비한테 뒤에 배경 좀 없애달라고 부탁해놨었습니다.. 받진 못했어요 ㅜ.ㅜ 
+      // 지금은 제가 따로 배경을 지웠지만 toon 옆의 여우?얼굴 배경까지 날라갔습니다..
 <View style = {styles.container}>
 
         <View style = {styles.header}></View>
@@ -77,8 +86,9 @@ export default function App() {
           <View style = {styles.LogoContainer}>
               <Image
                 style={styles.loginLogo}
-                source={require("./assets/login_maker-remove.png")} /> 
+                source={require("./assets/login_maker-remove.png")} />
           </View> 
+        
         <View style = {styles.inputBox}>
           <Text style = {styles.inputText}>아이디</Text>
 
@@ -198,6 +208,3 @@ const styles = StyleSheet.create({
     //backgroundColor: '#1ad657',
   },
 });
-
-// https://yuddomack.tistory.com/entry/React-Navigation%EC%9C%BC%EB%A1%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%ED%83%AD-%EB%84%A4%EB%B9%84%EA%B2%8C%EC%9D%B4%ED%84%B0-%ED%99%94%EB%A9%B4-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0
-// 네비게이션 통해서 화면 전환하기.
